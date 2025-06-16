@@ -1,0 +1,122 @@
+{
+  "name": "birthdaywish",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 38 20 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "96d0731e-102d-43a8-9721-8ce8ec86fb6c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/13wUNgrINTx21grgTKjEPJMR8FlAc0fpL0x7IAZMInkc/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13wUNgrINTx21grgTKjEPJMR8FlAc0fpL0x7IAZMInkc/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "DateOfBirth",
+              "lookupValue": "={{ $now.format(\"DD-MM\") }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        220,
+        0
+      ],
+      "id": "2180e11c-bd71-4b7b-9a07-c48ef12b2762",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Hxui6JLbfEPuX8um",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "=1372443557",
+        "text": "=🎉 Happy Birthday {{ $json[\"Name\"] }}! 🎂   Wishing you joy, success, and happiness always.   - From Harsha’s Birthday Bot 🤖",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "f7a7cf3f-54ef-4d83-af64-fcc37fc53582",
+      "name": "Telegram",
+      "webhookId": "7dd59d2f-2919-4c17-946a-c768bca79b49",
+      "credentials": {
+        "telegramApi": {
+          "id": "MGSgUI4i48pRHsCK",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5f4e2f27-e066-4529-9977-6e809cdae100",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2c7944ad62a93483a57edfc56df5a9e271fad3951f144051145597cf014bb98d"
+  },
+  "id": "gwElUkicfJ0JAZgu",
+  "tags": []
+}

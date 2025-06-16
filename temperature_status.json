@@ -1,0 +1,139 @@
+{
+  "name": "temperature status",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b9effbe4-0b02-4d89-8b79-33f518e23e02",
+      "name": "Telegram Trigger",
+      "webhookId": "79b4425b-f859-4157-82a5-e38d17f9782c",
+      "credentials": {
+        "telegramApi": {
+          "id": "MGSgUI4i48pRHsCK",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ea3a2461-4cf6-476f-aa2b-7bca33e316f5",
+              "leftValue": "msg.text",
+              "rightValue": "\"temperature\"",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "46a08e0d-7d86-4f11-9765-0980f81039bc",
+      "name": "If",
+      "notes": "{\n  \"value1\": \"={{ $json[\\\"message\\\"][\\\"text\\\"] }}\",\n  \"operation\": \"equal\",\n  \"value2\": \"temperature\"\n}\n"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json;\nconst weather = data.current;\n\nreturn [\n  {\n    json: {\n      message: `🌤️ Weather in Visakhapatnam:\nTemperature: ${weather.temp_c}°C\nCondition: ${weather.condition.text}\nHumidity: ${weather.humidity}%\nWind: ${weather.wind_kph} kph\nUpdated: ${weather.last_updated}`\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        0
+      ],
+      "id": "245fd708-873a-491f-9c8a-4bfdfdb4953a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "chatId": "=={{ $json[\"message\"][\"chat\"][\"id\"] }}",
+        "text": "={{ $json[\"message\"] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        740,
+        0
+      ],
+      "id": "245126bf-3dbd-4bb7-a296-c95a3624a58b",
+      "name": "Telegram",
+      "webhookId": "404e596b-00ce-4ced-870d-0ed9d7f85c1e",
+      "credentials": {
+        "telegramApi": {
+          "id": "MGSgUI4i48pRHsCK",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cbb97871-1208-4c60-a0e1-c519f7446b9e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2c7944ad62a93483a57edfc56df5a9e271fad3951f144051145597cf014bb98d"
+  },
+  "id": "1ZBiqafYamdUmRlQ",
+  "tags": []
+}
