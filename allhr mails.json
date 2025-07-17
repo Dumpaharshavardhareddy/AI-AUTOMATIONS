@@ -1,0 +1,275 @@
+{
+  "name": "allhr mails",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "600b71e6-bd0e-4efb-84ab-45141b5d5418",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        880,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const hrList = $items(\"Set Variables\")[0].json.allHRs;\nconst index = $items(\"Set Variables\")[0].json.currentIndex;\nif (index >= hrList.length) return [];\nreturn [{ json: hrList[index] }];"
+      },
+      "id": "4ff80191-5793-4ac9-be1a-64c3d787ee57",
+      "name": "Get Current HR",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "unit": "seconds"
+      },
+      "id": "8ea79a43-a0fb-47bc-8a06-61f533e3596d",
+      "name": "Wait 1 Second",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        64
+      ],
+      "webhookId": "6628e2d8-949a-4c0f-a75c-8f1d5732dba9"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "9f02a8af-592a-4d51-9e6c-c3b633886929",
+      "name": "Increment Index",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$items(\"Increment Index\")[0].json.currentIndex}}",
+              "value2": "={{$items(\"Increment Index\")[0].json.allHRs.length}}"
+            }
+          ]
+        }
+      },
+      "id": "541a13c5-2abf-4c49-8fb4-31efb4e59b72",
+      "name": "Check If Done",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2112,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "hvardhanreddy88@gmail.com",
+        "toEmail": "={{$json[\"Email\"]}}",
+        "subject": "Seeking Assistance for Suitable Job Opportunity & Referral",
+        "html": "=<p>Dear {{$json[\"Name\"]}},</p>\n<p>I hope this message finds you well.</p>\n<p>My name is Dumpa Harsha Vardhan Reddy, and I am writing to seek your assistance in finding a suitable job opportunity within your organization that aligns with my skills and experience. I am confident that I would be a valuable addition to the team, as I bring strong work ethics, a positive attitude, and a collaborative spirit to every project I undertake.</p>\n<p>I am a Software Developer and Embedded Systems Engineer with hands-on experience in Python, Django, full-stack web development, and IoT-based systems. I have successfully completed internships in both embedded systems and full-stack development, contributing to performance optimization, UI/UX enhancement, and real-time sensor integrations. My background in both software and hardware gives me a unique edge in building robust, scalable solutions.</p>\n<p>I would greatly appreciate it if you could let me know of any relevant openings that match my profile. If possible, I would also be grateful for a referral for the same.</p>\n<p>Please find my resume attached for your reference. I would be happy to provide any additional details if needed.</p>\n<p><b>Dumpa Harsha Vardhan Reddy</b><br>📞 +91 7396768478<br>📧 hvardhanreddy88@gmail.com<br>🔗 <a href=\"https://linkedin.com/in/harshavardhanreddydumpa\">LinkedIn</a><br>🌐 <a href=\"https://v0-harsha.vercel.app/\">Portfolio</a><br>📄 <a href=\"https://drive.google.com/file/d/1iCEEjQtPJV-U97uVIx2HYKtU6v3zZ-4G/view?usp=drive_link\">Resume</a></p>",
+        "options": {}
+      },
+      "id": "5181c294-3f59-4403-86e8-7a2cc9738e17",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        -32
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "lMl2QVBHoZrcqfsy",
+          "name": "SMTP account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 50
+            }
+          ]
+        }
+      },
+      "id": "0a5ada7b-f666-4fc3-8238-d52a6bd02498",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "fileId": "1sBNhtg2G-bFGlvpYTI86HNYMR0lDSzxe",
+        "binaryPropertyName": "csvData",
+        "options": {}
+      },
+      "id": "00de4b75-5edb-4ec8-a166-35e190f240e5",
+      "name": "Download CSV",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -64
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "VYJI0zdFWBnkdbX6",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "csvData",
+        "options": {}
+      },
+      "id": "50863df4-33f4-42d0-a045-08432a406bd1",
+      "name": "Parse CSV",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -64
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Get Current HR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current HR": {
+      "main": [
+        [
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Second": {
+      "main": [
+        [
+          {
+            "node": "Increment Index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Increment Index": {
+      "main": [
+        [
+          {
+            "node": "Check If Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Done": {
+      "main": [
+        [
+          {
+            "node": "Get Current HR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email1": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 Second",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download CSV": {
+      "main": [
+        [
+          {
+            "node": "Parse CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse CSV": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2a40056b-708c-4835-b4a1-1066fb4b93ac",
+  "meta": {
+    "instanceId": "33160d54fb998daf452aaa1262c391acc6ed054a14660b1f053d112cbc76a5a0"
+  },
+  "id": "HWUZKzBaR5cbMquy",
+  "tags": []
+}
